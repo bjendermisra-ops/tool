@@ -48,6 +48,7 @@ public final class ToolBridge {
     @JavascriptInterface
     public String beginFile(String fileName, String mimeType) {
         try {
+            if (transfers.size() >= 3) return "";
             String safeName = fileName == null ? "toolverse-file" :
                     fileName.replaceAll("[^a-zA-Z0-9._ -]", "_");
             if (safeName.length() > 96) safeName = safeName.substring(0, 96);
@@ -67,27 +68,28 @@ public final class ToolBridge {
     }
 
     @JavascriptInterface
-    public void appendChunk(String token, String base64Chunk) {
+    public boolean appendChunk(String token, String base64Chunk) {
         Transfer t = transfers.get(token);
-        if (t == null) throw new IllegalStateException("Unknown transfer");
+        if (t == null || base64Chunk == null || base64Chunk.length() > 120000) return false;
         try {
             byte[] bytes = Base64.decode(base64Chunk, Base64.DEFAULT);
             synchronized (t) {
-                if (t.output == null || t.bytes + bytes.length > MAX_FILE_BYTES)
-                    throw new IllegalStateException("File too large or transfer closed");
+                if (t.output == null || bytes.length == 0 || t.bytes + bytes.length > MAX_FILE_BYTES)
+                    throw new IllegalStateException("Invalid chunk or file exceeds limit");
                 t.output.write(bytes);
                 t.bytes += bytes.length;
             }
+            return true;
         } catch (Exception ex) {
             cancelFile(token);
-            throw new RuntimeException("Transfer failed", ex);
+            return false;
         }
     }
 
     @JavascriptInterface
-    public void finishFile(String token, boolean share) {
+    public boolean finishFile(String token, boolean share) {
         final Transfer t = transfers.remove(token);
-        if (t == null) return;
+        if (t == null) return false;
         try {
             synchronized (t) {
                 if (t.output != null) {
@@ -98,12 +100,20 @@ public final class ToolBridge {
                 if (t.bytes == 0) throw new IllegalStateException("Empty file");
             }
             t.share = share;
-            main.post(new Runnable() {
-                @Override public void run() { publishFile(t); }
-            });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                new Thread(new Runnable() {
+                    @Override public void run() { publishFile(t); }
+                }, "Toolverse-Export").start();
+            } else {
+                main.post(new Runnable() {
+                    @Override public void run() { publishFile(t); }
+                });
+            }
+            return true;
         } catch (Exception ex) {
             closeAndDelete(t);
             show("Could not finish file");
+            return false;
         }
     }
 
@@ -146,8 +156,13 @@ public final class ToolBridge {
                 ContentValues done = new ContentValues();
                 done.put(MediaStore.MediaColumns.IS_PENDING, 0);
                 activity.getContentResolver().update(destination, done, null, null);
-                if (t.share) shareUri(destination, t.mime);
-                else Toast.makeText(activity, "Saved to Downloads/Toolverse", Toast.LENGTH_LONG).show();
+                if (t.share) {
+                    final Uri shared = destination;
+                    final String mime = t.mime;
+                    main.post(new Runnable() {
+                        @Override public void run() { shareUri(shared, mime); }
+                    });
+                } else show("Saved to Downloads/Toolverse");
             } catch (Exception ex) {
                 if (destination != null) {
                     try { activity.getContentResolver().delete(destination, null, null); }
@@ -202,6 +217,7 @@ public final class ToolBridge {
         share.setType(mime);
         share.putExtra(Intent.EXTRA_STREAM, uri);
         share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        share.setClipData(ClipData.newUri(activity.getContentResolver(), "Toolverse export", uri));
         activity.startActivity(Intent.createChooser(share, "Share file"));
     }
 
