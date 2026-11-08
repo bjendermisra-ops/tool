@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101124">
+  <meta name="description" content="Toolverse: free photo tools, PDF editing, text converters and SEO utilities in one easy workspace.">
+  <meta name="robots" content="index,follow">
+  <title>Toolverse — All your everyday tools in one app</title>
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./assets/styles.css">
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="app">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a href="./" class="brand" data-nav="home"><span class="brand-icon">✳</span><span>tool<span class="brand-accent">verse</span><small>THE EVERYDAY STUDIO</small></span></a>
+      <div class="side-caption">WORKSPACE</div>
+      <nav class="side-links" id="sideNav">
+        <a href="#home" data-nav="home" class="active"><span>⌂</span> Home <b>01</b></a>
+        <a href="#explore" data-nav="explore"><span>▦</span> Explore all <b>11</b></a>
+        <a href="#saved" data-nav="saved"><span>♡</span> Saved tools</a>
+        <a href="#recent" data-nav="recent"><span>◷</span> Recently used</a>
+      </nav>
+      <div class="side-caption">COLLECTIONS</div>
+      <nav class="side-links" id="categoryNav">
+        <a href="#category/image" data-category="image"><span>◩</span> Image studio</a>
+        <a href="#category/pdf" data-category="pdf"><span>▤</span> PDF desk</a>
+        <a href="#category/text" data-category="text"><span>≡</span> Text lab</a>
+        <a href="#category/seo" data-category="seo"><span>⌘</span> SEO toolkit</a>
+      </nav>
+      <div class="side-panel"><span class="side-panel-dot">✦</span><strong>One app. Every tool.</strong><p>Create, refine, save and share in a unified workspace.</p><a href="#explore">Explore tools <span>↗</span></a></div>
+      <div class="sidebar-footer">MADE FOR CREATORS <span>✺</span> V1.0</div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="top-left"><button class="icon-btn menu-btn" type="button" id="menuBtn" aria-label="Open menu">☰</button><span class="breadcrumb" id="breadcrumb">Workspace <em>/</em> Home</span></div>
+        <div class="top-actions">
+          <button class="mini-search" type="button" id="searchFocus"><span>⌕</span><span>Search tools</span><kbd>/</kbd></button>
+          <span class="online-pill" id="networkBadge"><i></i> Ready</span>
+          <button class="icon-btn" type="button" id="themeBtn" aria-label="Toggle color theme" title="Toggle theme">◐</button>
+        </div>
+      </header>
+      <main id="main" tabindex="-1">
+        <section class="hero" aria-labelledby="mainTitle">
+          <div class="hero-copy">
+            <div class="eyebrow"><span>✧</span> YOUR CREATIVE UTILITY UNIVERSE <span class="eyebrow-line"></span></div>
+            <h1 id="mainTitle">Every tool.<br><span>One beautiful</span> space<span class="accent-dot">.</span></h1>
+            <p>Photos, PDF, text and SEO — everything you need to get things done, made simple.</p>
+            <div class="search-wrap"><span class="search-glyph">⌕</span><input id="searchInput" type="search" placeholder="What do you want to do today?" aria-label="Search tools" autocomplete="off"><span class="search-key">↵</span></div>
+            <div class="hero-trends"><strong>Try:</strong><button data-search="Remove background">Remove background</button><button data-search="Add text">Add text</button><button data-search="PDF">PDF</button></div>
+          </div>
+          <div class="hero-art" aria-hidden="true"><div class="art-ring ring-1"></div><div class="art-ring ring-2"></div><div class="art-center">✳</div><div class="art-float one"><span>◩</span> DESIGN</div><div class="art-float two"><span>▤</span> PDF</div><div class="art-float three"><span>✦</span> CREATE</div><div class="art-spark one">✳</div><div class="art-spark two">✧</div></div>
+        </section>
+        <div id="dynamic"></div>
+        <noscript><section class="fallback"><h2>Explore 11 tools</h2><p>Enable JavaScript to use the tools.</p><p>Image overlays, add text to photo, simple background eraser, black and white converter, blur photo, PDF page numbers, case converter, canonical tag generator, Blogger sitemap helper, AMP HTML audit and hreflang checker.</p></section></noscript>
+      </main>
+      <footer class="footer"><span>✳ toolverse</span><span>Tools that work for you. Images stay on your device for local editors.</span><a href="./privacy.html">Privacy</a></footer>
+    </div>
+  </div>
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <a href="#home" data-nav="home" class="active"><span>⌂</span><small>Home</small></a>
+    <a href="#explore" data-nav="explore"><span>▦</span><small>Explore</small></a>
+    <a href="#saved" data-nav="saved"><span>♡</span><small>Saved</small></a>
+    <a href="#recent" data-nav="recent"><span>◷</span><small>Recent</small></a>
+  </nav>
+  <div id="drawerShade" class="drawer-shade" hidden></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script defer src="./assets/app.js"></script>
+  <script defer src="./assets/tools.js"></script>
+</body>
+</html>
